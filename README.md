@@ -16,22 +16,88 @@ application tools to connect and interact with the database server:
 - **pgAdmin** - a desktop or web-based front-end to PostgreSQL database server.
 
 In this lesson, we will download and install the PostgreSQL software. We will
-then use the psql and pgAdmin tools to connect to the database server.
+install psql on our VM we created and pgAdmin on our host computers. We can then
+connect pgAdmin to our database on our VM in a similar way to how we connected
+VSCode to our VM in the last module.
 
-## Installing PostgreSQL
+## Installing PostgreSQL on the Virtual Machine
 
-1. Download the appropriate PostgreSQL version 15.0 installer from
-   [https://www.enterprisedb.com/downloads/postgres-postgresql-downloads](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads).
-2. Step through the installation instructions, using the recommended default
-   configuration.
-   The port should be 5432, and all recommended components should be installed.
+We'll be installing PostgreSQL with version 15. Since this package isn't in the
+default repository, we can enable its official package using the commands below.
 
-   ![select postgresql components](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/selectcomponents.png)
-    - [Install PostgreSQL for Windows](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql/)
-    - [Install PostgreSQL for macOS](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-macos//)
-        - You do not need to follow the instructions to "Load the sample database".
-    - [Install PostgreSQL for Linux](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-linux/)
-        - You do not need to follow the instructions to "Load the sample database".
+```bash
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+```
+
+Remember, when running these commands in the terminal to check for any errors.
+
+Next we'll update and upgrade the packages:
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+Now we can install PostgreSQL on our VM!
+
+```bash
+sudo apt install postgresql-15
+```
+
+Running the above command should install PostgreSQL with version 15. If we left
+off the "-15", it would install the latest PostgreSQL version. It should be
+noted these commands could take a little bit to run.
+
+Once everything looks like it has been successfully installed, switch over to
+the `postgres` user. This user is added once we install PostgreSQL. To switch to
+the `postgres` user, run the following command:
+
+```bash
+sudo -i -u postgres
+```
+
+Once there, we can run the `psql` command. Try entering `psql` into the
+terminal.
+
+<details>
+    <summary>Did you run into an error that looks like this? <br>
+      <code>psql: could not connect to server: No such file or directory<br>
+            Is the server running locally and accepting
+            connections on Unix domain socket "/var/run/postgresql/.s.PGSQL.5432"
+      </code>
+    </summary>
+
+  <p>If so, don't worry! It just means PostgreSQL is probably not running!</p>
+  <p>Type <code>exit</code> to get out of the `postgres` user space and then run the command:</p>
+  <code>sudo service postgresql start</code>
+  <p>This can take a couple of seconds to start the PostgreSQL service. Once it has started, check the status to make sure it is running:</p>
+  <code>sudo service postgresql status</code>
+  <p>This might produce the following output:</p>
+  <img src="https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/postgres-status.png"/>
+  <p>Now go back and switch to the <code>postgres</code> user and try the <code>psql</code> command again.</p>
+
+</details>
+
+The `psql` command will take us into the PostgreSQL space:
+
+```bash
+postgres=#
+```
+
+Once in this space, double check the version by typing:
+
+```bash
+SELECT version();
+```
+
+Ensure this prints out the correct version we installed! To quit, enter `\q`.
+This will lead us back to our `postgres` user space. To get out of the
+`postgres` user space, type `exit`.
+
+We're all done installing PostgreSQL on our virtual machine! Now let's install
+pgAdmin 4 on our host machines to give us a nice user interface to interact with
+the databases we will create.
+123456789101112131415161718192021222324252627ac282930313233343536373839404041434
 
 ## Connect to PostgreSQL database server using **psql**
 
