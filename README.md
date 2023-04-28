@@ -86,74 +86,52 @@ postgres=#
 
 Once in this space, double check the version by typing:
 
-```bash
+```sql
 SELECT version();
 ```
 
-Ensure this prints out the correct version we installed! To quit, enter `\q`.
-This will lead us back to our `postgres` user space. To get out of the
-`postgres` user space, type `exit`.
+Ensure this prints out the correct version we installed! While we are in this
+space, let's change password. For demonstration purposes, we have the password
+here set as "postgres". If you use a different password, make sure to remember
+it!
+
+```sql
+ALTER USER postgres PASSWORD 'postgres';
+```
+
+To quit, enter `\q`. This will lead us back to our `postgres` user space. To get
+out of the`postgres` user space, type `exit`.
 
 We're all done installing PostgreSQL on our virtual machine! Now let's install
 pgAdmin 4 on our host machines to give us a nice user interface to interact with
 the databases we will create.
-123456789101112131415161718192021222324252627ac282930313233343536373839404041434
 
-## Connect to PostgreSQL database server using **psql**
+## Installing pgAdmin 4 on the Host Machine
 
 ### Windows Instructions
 
-1. Launch the **psql** tool.
-
-   ![windows psql tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/psql.png)
-
-2. Hit enter to accept default values for server, database, port, and username.
-3. Enter the password for the **postgres** user.
-4. At the prompt **postgres=#**, enter `SELECT version();`
-5. Confirm the version is "PostgreSQL 15.0" (or whatever version you have
-   installed).
-6. At the prompt **postgres=#**, enter `exit` to quit the program and return to
-   the command line prompt.
-
-![psql windows session](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/windows_psql_session.jpg)
+1. Download pgAdmin 4 at [this link here](https://www.pgadmin.org/download/pgadmin-4-windows/).
+   Choose the latest version available.
+2. Once you have downloaded it, run the executable and follow the set-up
+   prompts with the default configurations.
 
 ### macOS Instructions
 
-1. Launch **psql** from the Launchpad (or enter the command `psql -U postgres`
-   in a terminal window).
-
-   ![mac psql tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/psql_mac.png)
-
-2. Hit enter to accept default values for server, database, port, and username.
-3. Enter the password for the **postgres** user.
-4. At the prompt **postgres=#**, enter `SELECT version();`
-5. Confirm the version is "PostgreSQL 15.0" (or whatever version you have
-   installed).
-6. At the prompt **postgres=#**, enter `exit` to quit the program (running in
-   terminal window) or close the application window (launched from launchpad).
-
-![psql mac session](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/mac_psql_session.png)
-
-### Linux instructions
-
-1. Scroll down to follow the instructions labeled
-   [Connect to the PostgreSQL database server via psql](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-linux/).
-2. At the prompt **postgres=#**, enter `SELECT version();`
-3. Confirm the version is "PostgreSQL 15.0" (or whatever version you have
-   installed).
-4. At the prompt **postgres=#**, enter `exit` to quit the program and return to
-   the command line prompt.
+1. Download pgAdmin 4 at [this link here](https://www.pgadmin.org/download/pgadmin-4-macos/).
+   Choose the latest version available.
+2. Once you have downloaded it, run the executable and follow the set-up
+   prompts with the default configurations.
 
 ## Connect to PostgreSQL database server using **pgAdmin**
 
 In subsequent lessons we will primarily use the *pgAdmin** tool to work with
 PostgreSQL.
 
-| Windows                                                                                                   | macOS                                                                                                     | Linux                            |
-|-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|----------------------------------|
-| Launch **pgAdmin 4**                                                                                      | Launch **pgAdmin 4** from the Launchpad.                                                                  | /usr/local/pgadmin4/bin/pgadmin4 |
-| ![windows pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin.png) | ![mac pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin_mac.png) | Adjust the path as necessary.    |
-
+| Windows                                                                                                   | macOS                                                                                                     |
+|-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| Launch **pgAdmin 4**                                                                                      | Launch **pgAdmin 4** from the Launchpad.                                                                  |
+| ![windows pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin.png) | ![mac pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin_mac.png) |
+123456789101112131415161718192021222324252627ac282930313233343536373839404041434
 1. Enter the password for the **postgres** user.
 2. You should see a default server **PostgreSQL 15** along with a database named
    **postgres**:
@@ -178,4 +156,7 @@ the database server:
 
 ## Resources
 
-[Getting Started with PostgreSQL](https://www.postgresqltutorial.com/postgresql-getting-started/)
+- [Getting Started with PostgreSQL](https://www.postgresqltutorial.com/postgresql-getting-started/)
+- [Install PostgreSQL Linux](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-linux/)
+- [How to Install PostgreSQL 15 on Ubuntu 22.04 Step-by-Step](https://www.linuxtechi.com/how-to-install-postgresql-on-ubuntu/)
+- [How to Start PostgreSQL](https://askubuntu.com/questions/1206416/how-to-start-postgresql)
