@@ -84,7 +84,7 @@ The `psql` command will take us into the PostgreSQL space:
 postgres=#
 ```
 
-Once in this space, double check the version by typing:
+Once in this space, double-check the version by typing:
 
 ```sql
 SELECT version();
@@ -101,6 +101,65 @@ ALTER USER postgres PASSWORD 'postgres';
 
 To quit, enter `\q`. This will lead us back to our `postgres` user space. To get
 out of the`postgres` user space, type `exit`.
+
+Next we want to open up PostgreSQL so our host machine can access it through
+pgAdmin.
+
+Navigate to the `/etc/postgresql/15/main` directory and, as the `sudo`
+user, open up the `postgresql.conf` file:
+
+```bash
+sudo vi postgresql.conf
+```
+
+Once in the file, search for "list_addresses". It may be commented out.
+Un-comment it out and change the line to the following:
+
+```text
+listen_addresses = '*'
+```
+
+Within this file, note the port that PostgreSQL will be running on. By default,
+this should be 5432. If it is a different port number, take note of
+it, as we will need this in a later section. Before saving the file, check the
+changes made with the screenshot below:
+
+![postgresql.conf-changes](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/postgresql-conf-file-changes.png)
+
+We'll need to make one more change so that our host machine can access the
+database on our virtual machines. Open up the `pg_hba.conf` file:
+
+```bash
+sudo vi pg_hba.conf
+```
+
+Search for "IPv4 local connections" inside the file. We may see a line under
+that comment that looks like this:
+
+```text
+host    all             all             127.0.0.1/32            scram-sha-256
+```
+
+Copy and paste that line below it and change the IP address to your computer's
+IP address along with the method. For example:
+
+```text
+host    all             all             10.0.0.149/32            trust
+```
+
+If you don't know your IP address, you can find it by opening a terminal window
+on your host machine and type `ifconfig`. Note: You may need to use the IPv4
+address listed under "Wireless LAN adapter Wi-Fi" as the VM is connected to the
+network through a bridged adapter. Before saving the file, check the changes
+align with the text below:
+
+```text
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all             10.0.0.149/32            trust
+```
+
+Save and close the `pg_hba.conf` file and reboot the virtual machine by typing
+the `reboot` command or exit out of VirtualBox.
 
 We're all done installing PostgreSQL on our virtual machine! Now let's install
 pgAdmin 4 on our host machines to give us a nice user interface to interact with
@@ -131,20 +190,49 @@ PostgreSQL.
 |-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
 | Launch **pgAdmin 4**                                                                                      | Launch **pgAdmin 4** from the Launchpad.                                                                  |
 | ![windows pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin.png) | ![mac pgadmin tool](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmin_mac.png) |
-123456789101112131415161718192021222324252627ac282930313233343536373839404041434
-1. Enter the password for the **postgres** user.
-2. You should see a default server **PostgreSQL 15** along with a database named
-   **postgres**:
 
-![pgadmin default server](https://curriculum-content.s3.amazonaws.com/6002/setting-up-postgres/pgadmindefaultserver.png)
+Once you open up pgAdmin 4, navigate to the "Dashboard" tab in the main window
+and choose "Add New Server" under "Quick Links":
 
-We will create new databases to work with in subsequent lessons and labs.
-However, do not delete or alter the default **postgres** database.
+![add-new-server](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-add-new-server.png)
 
-If you do not have the default **PostgreSQL 15** server, scroll down to the
-heading labeled
-[2) Connect to PostgreSQL database server using pgAdmin](https://www.postgresqltutorial.com/postgresql-getting-started/connect-to-postgresql-database/)
-and follow the directions to create the server.
+A "Register - Server" dialogue will then pop up. In the "General" tab of this
+dialogue, specify a name for the server. For example, enter in "my-vm" or
+"vm-db":
+
+![name-server](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-register-server-general.png)
+
+After filling out the name field in the "General" tab, navigate over to the
+"Connection" tab. Fill out the following fields:
+
+![set-up-connection](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-register-server-connection.png)
+
+- For the "Host name/address" field, enter the virtual machine's IP address. For
+  example: 10.0.0.XX.
+- The default port number for a PostgreSQL database is 5432. If your database is
+  running on a different port, enter that port number in the "Port" field.
+- The "Password" field should be set to the password you used to alter the
+  `postgres` user in the previous section.
+
+Click "Save". pgAdmin will then attempt to connect to the server. If all goes
+well, the "Dashboard" tab should then look something like this:
+
+![connected-server](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-connected-vm.png)
+
+<details>
+    <summary>Did you run into an error while trying to connect that looks like this? <br>
+      <img src="https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-pg-hba-conf-error.png"/>
+    </summary>
+
+  <p>If so, navigate back to your virtual machine and change into the following directory:</p>
+  <code>cd /etc/postgresql/15/main</code>
+  <p>Open up the <code>pg_hba.conf</code> file again as a <code>sudo</code> user:</p>
+  <code>sudo vi pg_hba.conf</code> 
+  <p>Change the line we entered before with the IP address that is listed here in this error.</p>
+  <p>Then save the file and reboot the virtual machine again.</p>
+  <p>Wait until the virtual machine has fully started back up again and try to save the server again to connect.</p>
+
+</details>
 
 ## Conclusion
 
@@ -160,3 +248,5 @@ the database server:
 - [Install PostgreSQL Linux](https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-linux/)
 - [How to Install PostgreSQL 15 on Ubuntu 22.04 Step-by-Step](https://www.linuxtechi.com/how-to-install-postgresql-on-ubuntu/)
 - [How to Start PostgreSQL](https://askubuntu.com/questions/1206416/how-to-start-postgresql)
+- [How to Connect Remotely to PostgreSQL Database Using pgAdmin](https://chemicloud.com/kb/article/postgresql-database-pgadmin/)
+- [StackOverflow: Can't Connect to PostgreSQL on Port 5432](https://stackoverflow.com/questions/38466190/cant-connect-to-postgresql-on-port-5432)
