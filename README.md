@@ -161,6 +161,18 @@ host    all             all             10.0.0.149/32            trust
 Save and close the `pg_hba.conf` file and reboot the virtual machine by typing
 the `reboot` command or exit out of VirtualBox.
 
+Once the virtual machine has restarted, we'll need to install one more
+dependency to get everything working and connected. Run the following command
+below and ensure there are no errors:
+
+```bash
+sudo apt install libpq-dev
+```
+
+This dependency is needed for something called `psycopg2`, which will help
+connect our Python code to our database. We'll learn more about that later in
+another section.
+
 We're all done installing PostgreSQL on our virtual machine! Now let's install
 pgAdmin 4 on our host machines to give us a nice user interface to interact with
 the databases we will create.
