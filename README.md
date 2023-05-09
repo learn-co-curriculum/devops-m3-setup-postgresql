@@ -126,6 +126,14 @@ changes made with the screenshot below:
 
 ![postgresql.conf-changes](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/postgresql-conf-file-changes.png)
 
+Save and exit out of the `postgresql.conf` file and run the following command:
+
+```bash
+sudo ufw allow 5432
+```
+
+This will enable the Postgres port.
+
 We'll need to make one more change so that our host machine can access the
 database on our virtual machines. Open up the `pg_hba.conf` file:
 
@@ -140,22 +148,26 @@ that comment that looks like this:
 host    all             all             127.0.0.1/32            scram-sha-256
 ```
 
-Copy and paste that line below it and change the IP address to your computer's
-IP address along with the method. For example:
+Copy and paste the following line below the existing line:
 
 ```text
-host    all             all             10.0.0.149/32            trust
+host    all             all             0.0.0.0/0                md5
 ```
 
-If you don't know your IP address, you can find it by opening a terminal window
-on your host machine and type `ifconfig`. Note: You may need to use the IPv4
-address listed under "Wireless LAN adapter Wi-Fi" as the VM is connected to the
-network through a bridged adapter. Before saving the file, check the changes
-align with the text below:
+> **Note**: Adding "host all all 0.0.0.0/0 md5" to the PostgreSQL configuration
+> file will allow any client to connect to the database server using any user
+> account, as long as the client can provide the correct password. While this
+> can be convenient for development or testing purposes, it is generally not
+> recommended for production environments due to several potential security
+> issues. In a real production environment, we should either whitelist an IP or
+> use a different method of connection like
+> [SSH Tunnels](https://www.postgresql.org/docs/8.3/ssh-tunnels.html).
+
+Before saving the file, check the changes align with the text below:
 
 ```text
 host    all             all             127.0.0.1/32            scram-sha-256
-host    all             all             10.0.0.149/32            trust
+host    all             all             0.0.0.0/0                md5
 ```
 
 Save and close the `pg_hba.conf` file and reboot the virtual machine by typing
@@ -230,21 +242,6 @@ Click "Save". pgAdmin will then attempt to connect to the server. If all goes
 well, the "Dashboard" tab should then look something like this:
 
 ![connected-server](https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-connected-vm.png)
-
-<details>
-    <summary>Did you run into an error while trying to connect that looks like this? <br>
-      <img src="https://curriculum-content.s3.amazonaws.com/pe-mod-3/setup-postgres/pgAdmin-pg-hba-conf-error.png"/>
-    </summary>
-
-  <p>If so, navigate back to your virtual machine and change into the following directory:</p>
-  <code>cd /etc/postgresql/15/main</code>
-  <p>Open up the <code>pg_hba.conf</code> file again as a <code>sudo</code> user:</p>
-  <code>sudo vi pg_hba.conf</code> 
-  <p>Change the line we entered before with the IP address that is listed here in this error.</p>
-  <p>Then save the file and reboot the virtual machine again.</p>
-  <p>Wait until the virtual machine has fully started back up again and try to save the server again to connect.</p>
-
-</details>
 
 ## Conclusion
 
